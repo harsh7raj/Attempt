@@ -646,6 +646,60 @@ plt.ylabel("Price")
 plt.legend()
 plt.grid()
 plt.show()
+
+
+OR
+
+
+
+# Program 9: Stock Prediction using GRU (standardized like Program 10)
+
+import numpy as np
+import yfinance as yf
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import GRU, Dense
+
+# ---- Load data ----
+data = yf.download("AAPL", start="2010-01-01", end="2023-01-01")[['Open']]
+
+# ---- Scale ----
+scaler = MinMaxScaler()
+scaled = scaler.fit_transform(data)
+
+# ---- Create sequences ----
+X, y = [], []
+for i in range(60, len(scaled)):
+    X.append(scaled[i-60:i])
+    y.append(scaled[i])
+X, y = np.array(X), np.array(y)
+
+# ---- Train/Test split ----
+split = int(len(X) * 0.8)
+X_train, X_test = X[:split], X[split:]
+y_train, y_test = y[:split], y[split:]
+
+# ---- Build GRU model ----
+model = Sequential([
+    GRU(50, return_sequences=False, input_shape=(60, 1)),
+    Dense(1)
+])
+model.compile(optimizer='adam', loss='mse')
+
+# ---- Train ----
+model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=1)
+
+# ---- Predict ----
+pred = scaler.inverse_transform(model.predict(X_test))
+real = scaler.inverse_transform(y_test)
+
+# ---- Plot ----
+plt.plot(real, label='Real')
+plt.plot(pred, label='Predicted')
+plt.title("GRU Stock Prediction")
+plt.legend()
+plt.show()
 """
     print(code)
 

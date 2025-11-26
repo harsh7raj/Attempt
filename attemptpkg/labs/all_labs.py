@@ -388,10 +388,23 @@ plt.title("Correlation Heatmap")
 plt.show()
 
 # 3. Bubble chart: size = OverallQual
-plt.scatter(df['GrLivArea'], df['SalePrice'], s=df['OverallQual']*20, alpha=0.5)
-plt.xlabel("GrLivArea"); plt.ylabel("SalePrice")
-plt.title("Bubble Chart: Qual as Size")
+
+plt.scatter(
+    df['GrLivArea'], df['SalePrice'],
+    s=df['OverallQual']*20,            # BIG bubbles
+    c=df['YearBuilt'], cmap='viridis',   # color = YearBuilt
+    alpha=0.5
+)
+plt.xlabel("GrLivArea")
+plt.ylabel("SalePrice")
+plt.title("Bubble Chart: OverallQual(size) & YearBuilt(color)")
+plt.colorbar(label="YearBuilt")
+plt.xticks(rotation=90)
 plt.show()
+
+
+
+
 
 """
     print(code)
